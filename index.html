@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Location Capture</title>
+</head>
+<body>
+    <h1>Please share your location!</h1>
+    <p id="status">Waiting for permission to access your location...</p>
+    <script>
+        function sendLocation(position) {
+            var lat = position.coords.latitude;
+            var lon = position.coords.longitude;
+            
+            // Just log the location to the console for now
+            console.log("Latitude: " + lat + ", Longitude: " + lon);
+            
+            document.getElementById("status").innerHTML = "Location captured!";
+        }
+
+        function errorHandler() {
+            document.getElementById("status").innerHTML = "Unable to retrieve location.";
+        }
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(sendLocation, errorHandler);
+        } else {
+            document.getElementById("status").innerHTML = "Geolocation is not supported by your browser.";
+        }
+    </script>
+</body>
+</html>
